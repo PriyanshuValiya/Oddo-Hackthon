@@ -1,9 +1,8 @@
 "use client";
 
-
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaChartLine, FaWallet, FaPiggyBank, FaBell, FaLock, FaRobot } from "react-icons/fa";
+import SpotlightCard from "@/components/spotlight";
 
 const features = [
   { icon: <FaChartLine className="text-blue-500 text-4xl" />, title: "Real-Time Insights", description: "Get AI-powered analytics on your spending and investments instantly." },
@@ -38,15 +37,13 @@ export default function FeatureCards() {
             transition={{ duration: 0.6, delay: index * 0.1 }}
             viewport={{ once: true }}
           >
-            <Card className="p-6 border border-blue-500 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 bg-white">
-              <CardHeader className="flex items-center gap-4">
+            <SpotlightCard  spotlightColor="rgba(0, 229, 255, 0.2)" className="border border-blue-500 shadow-lg shadow-gray-200"   >
+              <div className="flex items-center gap-4 mb-4">
                 {feature.icon}
-                <CardTitle className="text-xl font-semibold">{feature.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">{feature.description}</p>
-              </CardContent>
-            </Card>
+                <h3 className="text-grey text-xl font-semibold">{feature.title}</h3>
+              </div>
+              <p className="text-gray-300">{feature.description}</p>
+            </SpotlightCard>
           </motion.div>
         ))}
       </div>

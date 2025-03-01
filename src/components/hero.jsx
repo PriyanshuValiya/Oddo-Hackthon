@@ -7,6 +7,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import Header from "./header";
 
+
 const HeroSection = () => {
   const imageRef = useRef(null);
 
@@ -84,6 +85,7 @@ const HeroSection = () => {
             </div>
           </motion.div>
         </div>
+
         
       </section>
       
