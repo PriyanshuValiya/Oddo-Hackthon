@@ -1,24 +1,38 @@
 import mongoose from "mongoose";
 
-// Replace this with your actual MongoDB connection URL
-const MONGODB_URL =
-  process.env.NEXT_PUBLIC_MONGODB_URI ||
-  "mongodb+srv://valiyapriyansukumar:priyanshu%40odoo@cluster0.qrh5f.mongodb.net"; // URL-encoded password
+const MONGO_URI = "mongodb+srv://valiyapriyansukumar:odoohackathon@cluster0.qrh5f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
-// Check if a connection is already established
-if (mongoose.connection.readyState === 1) {
-  console.log("Already connected to MongoDB");
-} else {
-  // Connect to MongoDB
-  const connectDB = async () => {
-    try {
-      await mongoose.connect(MONGODB_URL);
-      console.log("Connected to MongoDB successfully");
-    } catch (err) {
-      console.error("Error connecting to MongoDB:", err);
-    }
-  };
-
-  // Export the connection function
-  export default connectDB;
+if (!MONGO_URI) {
+  throw new Error("MONGO_URI is not defined in environment variables");
 }
+
+let cached = global.mongoose || { conn: null, promise: null };
+
+const connectDB = async () => {
+  if (cached.conn) {
+    console.log("✅ Using existing database connection");
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
+    console.log("Connecting to MongoDB...");
+    cached.promise = mongoose.connect(MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+    console.log("MongoDB connected successfully");
+    return cached.conn;
+  } catch (error) {
+    console.error("MongoDB connection failed:", error);
+    cached.promise = null; // Reset promise for retry
+    throw new Error("Database connection failed");
+  }
+};
+
+global.mongoose = cached;
+
+export default connectDB;

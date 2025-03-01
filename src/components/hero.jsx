@@ -84,6 +84,25 @@ const HeroSection = () => {
               />
             </div>
           </motion.div>
+
+          <motion.div
+            className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6 mt-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+          >
+            <Link href="/new">
+              <Button
+                size="lg"
+                className="px-8 py-4 bg-blue-600 text-white hover:bg-blue-700 text-lg font-semibold rounded-lg shadow-lg hover:shadow-2xl transition duration-300 transform hover:scale-105"
+              >
+                CheckOut News
+              </Button>
+            </Link>
+          </motion.div>
+
+
+
         </div>
 
         

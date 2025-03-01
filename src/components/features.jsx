@@ -37,12 +37,12 @@ export default function FeatureCards() {
             transition={{ duration: 0.6, delay: index * 0.1 }}
             viewport={{ once: true }}
           >
-            <SpotlightCard  spotlightColor="rgba(0, 229, 255, 0.2)" className="border border-blue-500 shadow-lg shadow-gray-200"   >
+            <SpotlightCard  spotlightColor="rgba(103, 189, 255, 0.2)" className="border border-blue-500 shadow-lg shadow-gray-200"   >
               <div className="flex items-center gap-4 mb-4">
                 {feature.icon}
                 <h3 className="text-grey text-xl font-semibold">{feature.title}</h3>
               </div>
-              <p className="text-gray-300">{feature.description}</p>
+              <p className="text-black">{feature.description}</p>
             </SpotlightCard>
           </motion.div>
         ))}
