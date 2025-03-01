@@ -16,19 +16,16 @@ const Header = async () => {
           <Image
             src={"/logo.png"}
             alt="Welth Logo"
-            width={200}
-            height={60}
-            className="h-12 w-auto object-contain"
+            width={250} 
+            height={120} 
+            className="h-full w-[250px] object-contain max-h-[70px]"
           />
         </Link>
 
         <Link href="/new">
-           <button>
-              News
-           </button>
+          <button>News</button>
         </Link>
 
-     
         {/* Action Buttons */}
         <div className="flex items-center space-x-4">
           <SignedIn>
