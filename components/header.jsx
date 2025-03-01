@@ -27,6 +27,16 @@ const Header = async () => {
               News
            </button>
         </Link>
+        <Link href="/stocks">
+           <button>
+              Stock
+           </button>
+        </Link>
+        <Link href="/mutualfund">
+           <button>
+              Mutual Funds
+           </button>
+        </Link>
 
      
         {/* Action Buttons */}
