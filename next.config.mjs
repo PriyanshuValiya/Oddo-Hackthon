@@ -1,4 +1,29 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+
+const nextConfig = {
+    async headers() {
+      return [
+        {
+          source: "/:path*", // Apply CORS to all API routes
+          headers: [
+            {
+              key: "Access-Control-Allow-Origin",
+              value: "*", // Change '*' to a specific origin if needed
+            },
+            {
+              key: "Access-Control-Allow-Methods",
+              value: "GET, POST, OPTIONS",
+            },
+            {
+              key: "Access-Control-Allow-Headers",
+              value: "X-Requested-With, Content-Type, Authorization",
+            },
+          ],
+        },
+      ];
+    },
+  };
+  
+
 
 export default nextConfig;

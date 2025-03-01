@@ -4,6 +4,7 @@ import Footer from "@/components/footer";
 import HeroSection from "@/components/hero";
 import Stats from "@/components/stats";
 import Detailpage from "@/components/detail";
+import Stock from "@/components/Stock";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <FeatureCards />
       <Detailpage />
       <Footer />
+      {/* <Stock/> */}
     </div>
   );
 }
