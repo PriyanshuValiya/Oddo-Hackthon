@@ -1,36 +1,31 @@
+"use server";
+
 import User from "../models/userModel.js";
 import connectDB from "../utils/connectDB.js";
 
-export default async function checkUser(user) {
-  if (!user) {
-    console.error("No user provided to checkUser function");
+export default async function checkUser({ id, name, email, imageUrl }) {
+  if (!id) {
+    console.error("No user ID provided to checkUser function");
     return;
   }
 
-  const userId = user?.id;
-  const userName = user?.fullName;
-  const userEmail = user?.primaryEmailAddress?.emailAddress;
-  const userImage = user?.imageUrl;
+  await connectDB(); 
 
   try {
-    await connectDB();
-    console.log(userName);
+    const existingUser = await User.findOne({ clerkUserId: id });
 
-    // const existingUser = await User.findOne({ clerkUserId: userId });
+    if (!existingUser) {
+      const newUser = await User.create({
+        clerkUserId: id,
+        name,
+        email,
+        imageUrl,
+      });
 
-    // if (!existingUser) {
-    //   const newUser = new User({
-    //     clerkUserId: userId,
-    //     name: userName,
-    //     email: userEmail,
-    //     imageUrl: userImage,
-    //   });
-
-    //   await newUser.save();
-    //   console.log("New user :", newUser);
-    // } else {
-    //   console.log("User already exists !!");
-    // }
+      console.log("New user added:", newUser);
+    } else {
+      console.log("User already exists:", existingUser);
+    }
   } catch (error) {
     console.error("Error checking/adding user:", error);
   }
