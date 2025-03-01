@@ -1,12 +1,18 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import FeatureCards from "@/components/features";
+
+import Footer from "@/components/footer";
+import HeroSection from "@/components/hero";
+import Stats from "@/components/stats";
+import Detailpage from "@/components/detail";
 
 export default function Home() {
   return (
-    <div className="flex justify-center items-center h-screen w-full px-5">
-      <Link href={"/dashboard"}>
-        <Button className="cursor-pointer">Go Daahboard</Button>
-      </Link>
+    <div className="flex flex-col justify-center items-center min-h-screen w-full px-5 space-y-10">
+      <HeroSection />
+      <Stats />
+      <FeatureCards />
+      <Detailpage />
+      <Footer />
     </div>
   );
 }
