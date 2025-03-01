@@ -5,53 +5,66 @@ const Footer = () => {
   const teamMembers = [
     {
       name: "Priyanshu Valiya",
-      linkedin: "https://www.linkedin.com/in/priyanshu-valiya19012006",
-      email: "valiyapriyansukumar@gmail.com",
-      github: "https://github.com/PriyanshuValiya"
+      linkedin: "https://linkedin.com/in/priyanshuvaliya",
+      email: "priyanshu@gmail.com",
+      github: "github.com/priyanshuvaliya",
     },
     {
       name: "Ashok Suthar",
-      linkedin: "https://www.linkedin.com/in/ashok-suthar-ba9699284",
-      email: "ashoksutharr4412@gmail.com",
-      github: "https://github.com/PriyanshuValiya"
+      linkedin: "https://linkedin.com/in/hetvipatel",
+      email: "ashok@gmail.com",
+      github: "github.com/priyanshuvaliya",
     },
     {
       name: "Vasu Vaghasia",
-      linkedin: "https://www.linkedin.com/in/vasu-vaghasia-6b1ab0282",
-      email: "vasuvaghasia005@gmail.com",
-      github: "https://github.com/PriyanshuValiya"
+      linkedin: "https://linkedin.com/in/johndoe",
+      email: "vasu@gmail.com",
+      github: "github.com/priyanshuvaliya",
     },
     {
       name: "Veer Patel",
-      linkedin: "https://www.linkedin.com/in/veer-patel-4a088528b",
-      email: "patelveer@gmail.com",
-      github: "https://github.com/PriyanshuValiya"
+      linkedin: "https://linkedin.com/in/janesmith",
+      email: "veer@gmail.com",
+      github: "github.com/priyanshuvaliya",
     },
   ];
 
   return (
     <footer className="bg-black text-white p-6 text-center">
       <h2 className="font-mono text-3xl font-semibold mb-4">
-        Oddo x Charusat Hackathon&apos;25
+        Oddo x Charusat Hackathon&lsquo;25
       </h2>
       <h2 className="font-mono text-xl font-semibold mb-4">Team : Bashboats</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {teamMembers.map((member, index) => (
           <div key={index} className="p-4 border border-gray-600 rounded-lg">
-            <h3 className="font-mono text-lg font-medium">{member.name.replace("'", "&rsquo;")}</h3>
-            
-            <div className="flex justify-around mt-7">
-                <Link href={member.linkedin} target="_blank"><Linkedin /></Link>
-                <Link href={member.github} target="_blank"><Github /></Link>
-                <Link href={member.email} target="_blank"><Mail /></Link>
+            <h3 className="font-mono text-lg font-medium">{member.name}</h3>
+            <div className="flex justify-between w-full mt-7">
+              <Link
+                href={member.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Linkedin />
+              </Link>
+              <Link
+                href={member.github}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Github />
+              </Link>
+              <Link href={`mailto:${member.email}`}>
+                <Mail />
+              </Link>
             </div>
           </div>
         ))}
       </div>
       <p className="mt-4 text-gray-500">
-        &copy; {new Date().getFullYear()} Team Innovators&#39; All rights reserved.
+        &copy; {new Date().getFullYear()} Team Innovators. All rights reserved.
       </p>
-    </footer>
+    </footer >
   );
 };
 
