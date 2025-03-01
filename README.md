@@ -1,8 +1,5 @@
 # Full Stack AI Fianace Platform with Next JS, Supabase, Tailwind, Prisma, Shadcn UI 
 
-### Make sure to create a .env file with following variables -
-
-
 DATABASE_URL=
 DIRECT_URL=
 
