@@ -22,21 +22,13 @@ const Header = async () => {
           />
         </Link>
 
-        {/* Navigation Links - Different for signed in/out users */}
-        <div className="hidden md:flex items-center space-x-8">
-          <SignedOut>
-            <a href="#features" className="text-gray-600 hover:text-blue-600">
-              Features
-            </a>
-            <a
-              href="#testimonials"
-              className="text-gray-600 hover:text-blue-600"
-            >
-              Testimonials
-            </a>
-          </SignedOut>
-        </div>
+        <Link href="/new">
+           <button>
+              News
+           </button>
+        </Link>
 
+     
         {/* Action Buttons */}
         <div className="flex items-center space-x-4">
           <SignedIn>
