@@ -1,11 +1,9 @@
 # Full Stack AI Finance Platform
 
-Project Video : [Drive Link](https://drive.google.com/drive/folders/1AnXf6vNCQSoJ5M-GGKoTNJGRt68syMlg?dmr=1&ec=wgc-drive-globalnav-goto)
-
 ## 🚀 Project Overview
 This project is a full-stack AI-powered finance platform developed during the Odoo Hackathon. It provides users with financial insights, real-time news, and data visualization to enhance financial decision-making.
 
-📽 **Project Video**: [Drive Link](#) *(Replace with actual link)*
+📽 **Project Video**: [Drive Link](https://drive.google.com/drive/folders/1AnXf6vNCQSoJ5M-GGKoTNJGRt68syMlg?dmr=1&ec=wgc-drive-globalnav-goto)
 
 ---
 
