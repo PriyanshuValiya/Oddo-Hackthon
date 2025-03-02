@@ -64,7 +64,7 @@ const Footer = () => {
       <p className="mt-4 text-gray-500">
         &copy; {new Date().getFullYear()} Team Innovators. All rights reserved.
       </p>
-    </footer>
+    </footer >
   );
 };
 

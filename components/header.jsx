@@ -16,26 +16,25 @@ const Header = async () => {
           <Image
             src={"/logo.png"}
             alt="Welth Logo"
-            width={200}
-            height={60}
-            className="h-12 w-auto object-contain"
+            width={250} 
+            height={120} 
+            className="h-full w-[250px] object-contain max-h-[70px]"
           />
         </Link>
 
-        {/* Navigation Links - Different for signed in/out users */}
-        <div className="hidden md:flex items-center space-x-8">
-          <SignedOut>
-            <a href="#features" className="text-gray-600 hover:text-blue-600">
-              Features
-            </a>
-            <a
-              href="#testimonials"
-              className="text-gray-600 hover:text-blue-600"
-            >
-              Testimonials
-            </a>
-          </SignedOut>
-        </div>
+        <Link href="/new">
+          <button>News</button>
+        </Link>
+        <Link href="/stocks">
+           <button>
+              Stock
+           </button>
+        </Link>
+        <Link href="/mutualfund">
+           <button>
+              Mutual Funds
+           </button>
+        </Link>
 
         {/* Action Buttons */}
         <div className="flex items-center space-x-4">
