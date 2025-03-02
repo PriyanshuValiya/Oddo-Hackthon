@@ -15,8 +15,10 @@ import { Input } from "@/components/ui/input";
 import { updateBudget } from "@/actions/budget";
 
 export function BudgetProgress({ initialBudget, currentExpenses }) {
+  const defaultBudget = { amount: 0 };
+  initialBudget = initialBudget || defaultBudget;
   const [isEditing, setIsEditing] = useState(false);
-  const [newBudget, setNewBudget] = useState(initialBudget?.amount?.toString() || "");
+  const [newBudget, setNewBudget] = useState(initialBudget?.amount?.toString() || "0");
   const [isOverspent, setIsOverspent] = useState(false);
   const [adjustedDailyLimit, setAdjustedDailyLimit] = useState(null);
   const [suggestedPlan, setSuggestedPlan] = useState(null);
@@ -28,6 +30,10 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
   const daysRemaining = daysInMonth - daysPassed;
 
   useEffect(() => {
+    if (!initialBudget) {
+  return <p>Loading budget data...</p>;
+}
+
     if (initialBudget && currentExpenses > initialBudget.amount) {
       setIsOverspent(true);
       const dailyLimit = (initialBudget.amount / (daysRemaining + daysInMonth)).toFixed(2);
@@ -58,16 +64,28 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
       toast.error("Please enter a valid amount");
       return;
     }
-    await updateBudget(amount);
-    setIsEditing(false);
+    
+    try {
+      await updateBudget(amount); // Update backend
+  
+      // ✅ Manually update UI without waiting for a prop update
+      initialBudget.amount = amount; // Temporary fix to reflect changes immediately
+  
+      setIsEditing(false);
+      toast.success("Budget updated successfully!");
+    } catch (error) {
+      console.error("Error updating budget:", error);
+      toast.error("Failed to update budget. Try again.");
+    }
   };
-
+  
   const handleCancel = () => {
     setNewBudget(initialBudget?.amount?.toString() || "");
     setIsEditing(false);
   };
 
-  const percentUsed = (currentExpenses / initialBudget.amount) * 100;
+  const percentUsed = (currentExpenses / initialBudget.amount) * 100 || 0;
+
 
   return (
     <Card>
