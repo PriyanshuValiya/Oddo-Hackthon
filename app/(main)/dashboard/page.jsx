@@ -1,6 +1,7 @@
-import { Suspense } from "react";
-import { getUserAccounts } from "@/actions/dashboard";
-import { getDashboardData } from "@/actions/dashboard";
+"use client";
+
+import { useEffect, useState } from "react";
+import { getUserAccounts, getDashboardData } from "@/actions/dashboard";
 import { getCurrentBudget } from "@/actions/budget";
 import { AccountCard } from "./_components/account-card";
 import { CreateAccountDrawer } from "@/components/create-account-drawer";
@@ -8,36 +9,65 @@ import { BudgetProgress } from "./_components/budget-progress";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { DashboardOverview } from "./_components/transaction-overview";
+import { Button } from "@/components/ui/button";
+import { MailIcon } from "lucide-react";
 
-export default async function DashboardPage() {
-  const [accounts, transactions] = await Promise.all([
-    getUserAccounts(),
-    getDashboardData(),
-  ]);
+export default function DashboardPage() {
+  const [accounts, setAccounts] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [budgetData, setBudgetData] = useState(null);
 
-  const defaultAccount = accounts?.find((account) => account.isDefault);
+  useEffect(() => {
+    async function fetchData() {
+      const [fetchedAccounts, fetchedTransactions] = await Promise.all([
+        getUserAccounts(),
+        getDashboardData(),
+      ]);
+      setAccounts(fetchedAccounts);
+      setTransactions(fetchedTransactions || []);
 
-  // Get budget for default account
-  let budgetData = null;
-  if (defaultAccount) {
-    budgetData = await getCurrentBudget(defaultAccount.id);
-  }
+      const defaultAccount = fetchedAccounts?.find(
+        (account) => account.isDefault
+      );
+      if (defaultAccount) {
+        const budget = await getCurrentBudget(defaultAccount.id);
+        setBudgetData(budget);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const sendMail = async () => {
+    alert("We will mail your data soon...");
+    try {
+      const response = await fetch("/api/send-mail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ balance: 12000, expense: 2800 }),
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong!");
+    }
+  };
 
   return (
     <div className="space-y-8">
-      {/* Budget Progress */}
       <BudgetProgress
         initialBudget={budgetData?.budget}
         currentExpenses={budgetData?.currentExpenses || 0}
       />
+      <DashboardOverview accounts={accounts} transactions={transactions} />
 
-      {/* Dashboard Overview */}
-      <DashboardOverview
-        accounts={accounts}
-        transactions={transactions || []}
-      />
+      <div className="flex justify-between w-full">
+        <h2 className="text-3xl font-semibold">Account Status</h2>
+        <Button onClick={sendMail}>
+          <MailIcon /> Mail Data
+        </Button>
+      </div>
 
-      {/* Accounts Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <CreateAccountDrawer>
           <Card className="hover:shadow-md transition-shadow cursor-pointer border-dashed">
@@ -47,10 +77,9 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
         </CreateAccountDrawer>
-        {accounts.length > 0 &&
-          accounts?.map((account) => (
-            <AccountCard key={account.id} account={account} />
-          ))}
+        {accounts.map((account) => (
+          <AccountCard key={account.id} account={account} />
+        ))}
       </div>
     </div>
   );
