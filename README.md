@@ -1,5 +1,7 @@
 # Full Stack AI Fianace Platform with Next JS, Supabase, Tailwind, Prisma, Shadcn UI 
 
+[Drive Link](https://drive.google.com/drive/folders/1AnXf6vNCQSoJ5M-GGKoTNJGRt68syMlg?dmr=1&ec=wgc-drive-globalnav-goto)
+
 DATABASE_URL=
 DIRECT_URL=
 
