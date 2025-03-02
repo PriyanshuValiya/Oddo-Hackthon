@@ -1,19 +1,11 @@
-# Full Stack AI Fianace Platform with Next JS, Supabase, Tailwind, Prisma, Shadcn UI 
+# Full Stack AI Fianace Platform 
 
 Project Video : [Drive Link](https://drive.google.com/drive/folders/1AnXf6vNCQSoJ5M-GGKoTNJGRt68syMlg?dmr=1&ec=wgc-drive-globalnav-goto)
 
-DATABASE_URL=
-DIRECT_URL=
-
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/onboarding
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
-
-GEMINI_API_KEY=
-
-RESEND_API_KEY=
-
-ARCJET_KEY=
+## Tech Stack
+- Frontend : Next.js
+- Backend : Next.js api routes
+- Authentication : Cleck
+- Data apis : google.news, RSS praser
+- Chart: npm rechart package
+- Database : Prisma
