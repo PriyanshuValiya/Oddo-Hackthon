@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Pencil, Check, X, AlertCircle, Lightbulb } from "lucide-react";
+import { Pencil, Check, X, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import {
   Card,
@@ -12,45 +12,34 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { updateBudget } from "@/actions/budget";
 
-export function BudgetProgress({ initialBudget, currentExpenses }) {
+export function BudgetProgress({ initialBudget, currentExpenses: initialExpenses }) {
   const [isEditing, setIsEditing] = useState(false);
   const [newBudget, setNewBudget] = useState(initialBudget?.amount?.toString() || "");
   const [isOverspent, setIsOverspent] = useState(false);
-  const [adjustedDailyLimit, setAdjustedDailyLimit] = useState(null);
   const [suggestedPlan, setSuggestedPlan] = useState(null);
-  const [tips, setTips] = useState([]);
-
-  const today = new Date();
-  const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-  const daysPassed = today.getDate();
-  const daysRemaining = daysInMonth - daysPassed;
+  const [reductionType, setReductionType] = useState("percentage");
+  const [reductionValue, setReductionValue] = useState("");
+  const [reductionAmount, setReductionAmount] = useState(0);
+  const [recoveryDays, setRecoveryDays] = useState(null);
+  const [recoveredAmount, setRecoveredAmount] = useState("");
+  const [remainingOverspent, setRemainingOverspent] = useState(0);
+  const [currentExpenses, setCurrentExpenses] = useState(initialExpenses);
 
   useEffect(() => {
-    if (initialBudget && currentExpenses > initialBudget.amount) {
+    const overspent = currentExpenses - initialBudget.amount;
+    if (initialBudget && overspent > 0) {
       setIsOverspent(true);
-      const dailyLimit = (initialBudget.amount / (daysRemaining + daysInMonth)).toFixed(2);
-      setAdjustedDailyLimit(dailyLimit);
-      setSuggestedPlan(`You have used your budget early! Limit daily spending to $${dailyLimit} for the next ${daysRemaining} days.`);
-      
-      // Generate budgeting tips dynamically
-      const newTips = [
-        "Review transactions and cut non-essential expenses (e.g., subscriptions, dining out).",
-        "Divide spending into 'Needs', 'Wants', and 'Savings' categories and adjust accordingly.",
-        "Try withdrawing your daily limit in cash to better control spending.",
-        "Plan meals at home instead of eating out to save on food expenses.",
-        "Use free or low-cost entertainment options instead of paid services.",
-        "Track expenses in real-time using a budgeting app.",
-      ];
-      setTips(newTips);
+      setRemainingOverspent(overspent);
+      setSuggestedPlan(`You're over budget! Adjust your spending for the coming months.`);
     } else {
       setIsOverspent(false);
-      setAdjustedDailyLimit(null);
       setSuggestedPlan(null);
-      setTips([]);
+      setRemainingOverspent(0);
     }
-  }, [currentExpenses, initialBudget, daysRemaining]);
+  }, [currentExpenses, initialBudget]);
 
   const handleUpdateBudget = async () => {
     const amount = parseFloat(newBudget);
@@ -68,6 +57,57 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
   };
 
   const percentUsed = (currentExpenses / initialBudget.amount) * 100;
+
+  const handleRecoveryPlan = () => {
+    if (!reductionValue || isNaN(parseFloat(reductionValue)) || parseFloat(reductionValue) <= 0) {
+      toast.error("Please enter a valid reduction value.");
+      return;
+    }
+
+    let reductionInRupees = reductionType === "percentage"
+      ? (parseFloat(reductionValue) / 100) * initialBudget.amount
+      : parseFloat(reductionValue);
+
+    setReductionAmount(reductionInRupees.toFixed(2));
+
+    // **Calculate how many months are needed to recover overspending**
+    let monthsToRecover = Math.floor(remainingOverspent / reductionInRupees);
+    let extraAmount = remainingOverspent % reductionInRupees;
+    let extraDays = extraAmount > 0 ? Math.ceil((extraAmount / reductionInRupees) * 30) : 0; // Convert remaining to days
+
+    const recoveryMessage =
+      monthsToRecover > 0
+        ? `${monthsToRecover} month(s) and ${extraDays} days`
+        : `${extraDays} days`;
+
+    setRecoveryDays(recoveryMessage);
+  };
+
+  const handleRecoverAmount = () => {
+    const amountRecovered = parseFloat(recoveredAmount);
+    if (isNaN(amountRecovered) || amountRecovered <= 0) {
+      toast.error("Please enter a valid recovery amount.");
+      return;
+    }
+
+    if (amountRecovered > remainingOverspent) {
+      toast.error("You cannot recover more than the overspent amount.");
+      return;
+    }
+
+    const newRemainingOverspent = remainingOverspent - amountRecovered;
+    setRemainingOverspent(newRemainingOverspent);
+    setCurrentExpenses((prev) => prev - amountRecovered);
+
+    if (newRemainingOverspent <= 0) {
+      setIsOverspent(false);
+      toast.success("Overspent amount fully recovered!");
+    } else {
+      toast.success(`You recovered ₹${amountRecovered}. Remaining overspent: ₹${newRemainingOverspent}`);
+    }
+
+    setRecoveredAmount(""); // Reset input field
+  };
 
   return (
     <Card>
@@ -95,7 +135,9 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
             ) : (
               <>
                 <CardDescription>
-                  {initialBudget ? `$${currentExpenses.toFixed(2)} of $${initialBudget.amount.toFixed(2)} spent` : "No budget set"}
+                  {initialBudget
+                    ? `₹${currentExpenses.toFixed(2)} of ₹${initialBudget.amount.toFixed(2)} spent`
+                    : "No budget set"}
                 </CardDescription>
                 <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} className="h-6 w-6">
                   <Pencil className="h-3 w-3" />
@@ -110,31 +152,50 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
           <div className="space-y-2">
             <Progress
               value={percentUsed}
-              extraStyles={
-                percentUsed > 100 ? "bg-red-500" : percentUsed >= 90 ? "bg-yellow-500" : "bg-green-500"
-              }
+              extraStyles={percentUsed > 100 ? "bg-red-500" : percentUsed >= 90 ? "bg-yellow-500" : "bg-green-500"}
             />
             <p className="text-xs text-muted-foreground text-right">{percentUsed.toFixed(1)}% used</p>
           </div>
         )}
 
         {isOverspent && (
-          <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md">
+          <div className="mt-4 p-3 bg-blue-100 text-blue-700 rounded-md">
             <div className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5" />
-              <span>You have used your budget early! Consider adjusting your spending.</span>
+              <span>You have exceeded your budget! Adjust spending for the coming months.</span>
             </div>
-            <p className="mt-2 text-sm">{suggestedPlan}</p>
-            <div className="mt-4 p-3 bg-yellow-100 text-yellow-700 rounded-md">
-              <div className="flex items-center gap-2">
-                <Lightbulb className="h-5 w-5" />
-                <span><strong>Smart Budgeting Tips:</strong></span>
-              </div>
-              <ul className="list-disc pl-6 mt-2 text-sm">
-                {tips.map((tip, index) => (
-                  <li key={index}>{tip}</li>
-                ))}
-              </ul>
+
+            {/* Recovery Plan */}
+            <div className="mt-4">
+              <p className="text-sm font-medium">Choose reduction type:</p>
+              <Select onValueChange={setReductionType} value={reductionType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="percentage">Percentage (%)</SelectItem>
+                  <SelectItem value="amount">Fixed Amount (₹)</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Input
+                type="number"
+                placeholder={`Enter ${reductionType === "percentage" ? "percentage" : "amount"} `}
+                className="mt-2"
+                value={reductionValue}
+                onChange={(e) => setReductionValue(e.target.value)}
+              />
+              <Button className="mt-2" onClick={handleRecoveryPlan}>Calculate Recovery Time</Button>
+              {recoveryDays && <p className="text-sm mt-2">Estimated recovery time: {recoveryDays}</p>}
+
+              <Input
+                type="number"
+                placeholder="Enter amount recovered"
+                className="mt-2"
+                value={recoveredAmount}
+                onChange={(e) => setRecoveredAmount(e.target.value)}
+              />
+              <Button className="mt-2" onClick={handleRecoverAmount}>Apply Recovery</Button>
             </div>
           </div>
         )}
