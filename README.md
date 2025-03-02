@@ -40,6 +40,6 @@ This project is a full-stack AI-powered finance platform developed during the Od
 
 1. **Clone the repository**  
    ```bash
-   git clone https://github.com/your-repo-name.git
-   cd your-repo-name
+   git clone https://github.com/Oddo-Hackthon.git
+   cd Oddo-Hackthon
 
