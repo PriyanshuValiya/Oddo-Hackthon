@@ -15,9 +15,12 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { updateBudget } from "@/actions/budget";
 
-export function BudgetProgress({ initialBudget, currentExpenses: initialExpenses }) {
+export function BudgetProgress({ initialBudget, currentExpenses }) {
+  const defaultBudget = { amount: 0 };
+  initialBudget = initialBudget || defaultBudget;
+
   const [isEditing, setIsEditing] = useState(false);
-  const [newBudget, setNewBudget] = useState(initialBudget?.amount?.toString() || "");
+  const [newBudget, setNewBudget] = useState(initialBudget?.amount?.toString() || "0");
   const [isOverspent, setIsOverspent] = useState(false);
   const [suggestedPlan, setSuggestedPlan] = useState(null);
   const [reductionType, setReductionType] = useState("percentage");
@@ -29,8 +32,10 @@ export function BudgetProgress({ initialBudget, currentExpenses: initialExpenses
   const [currentExpenses, setCurrentExpenses] = useState(initialExpenses);
 
   useEffect(() => {
+
     const overspent = currentExpenses - initialBudget.amount;
     if (initialBudget && overspent > 0) {
+
       setIsOverspent(true);
       setRemainingOverspent(overspent);
       setSuggestedPlan(`You're over budget! Adjust your spending for the coming months.`);
@@ -47,16 +52,28 @@ export function BudgetProgress({ initialBudget, currentExpenses: initialExpenses
       toast.error("Please enter a valid amount");
       return;
     }
-    await updateBudget(amount);
-    setIsEditing(false);
+    
+    try {
+      await updateBudget(amount); // Update backend
+  
+      // ✅ Manually update UI without waiting for a prop update
+      initialBudget.amount = amount; // Temporary fix to reflect changes immediately
+  
+      setIsEditing(false);
+      toast.success("Budget updated successfully!");
+    } catch (error) {
+      console.error("Error updating budget:", error);
+      toast.error("Failed to update budget. Try again.");
+    }
   };
-
+  
   const handleCancel = () => {
     setNewBudget(initialBudget?.amount?.toString() || "");
     setIsEditing(false);
   };
 
-  const percentUsed = (currentExpenses / initialBudget.amount) * 100;
+  const percentUsed = (currentExpenses / initialBudget.amount) * 100 || 0;
+
 
   const handleRecoveryPlan = () => {
     if (!reductionValue || isNaN(parseFloat(reductionValue)) || parseFloat(reductionValue) <= 0) {
