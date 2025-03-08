@@ -11,7 +11,7 @@ const Footer = () => {
     },
     {
       name: "Ashok Suthar",
-      linkedin: "https://linkedin.com/in/hetvipatel",
+      linkedin: "https://linkedin.com/in/ashoksuthar",
       email: "ashok@gmail.com",
       github: "github.com/priyanshuvaliya",
     },
